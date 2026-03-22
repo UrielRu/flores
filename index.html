@@ -80,20 +80,20 @@
             width: 100vw;
             height: 100vh;
             opacity: 0;
-            pointer-events: none; /* No interactivo hasta que aparezca */
+            pointer-events: none;
             transition: opacity 1.5s ease-in-out;
-            display: flex; /* Layout de columnas */
+            display: flex;
             z-index: 5;
         }
 
-        /* Sección Izquierda: La Carta */
+        /* Sección Izquierda/Arriba: La Carta */
         .seccion-carta {
-            flex: 1; /* Ocupa la mitad izquierda */
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 40px;
-            background-color: #fffbf0; /* Un tono ligeramente diferente para contrastar */
+            background-color: #fffbf0;
         }
 
         .hoja-carta {
@@ -101,27 +101,23 @@
             width: 90%;
             max-width: 500px;
             min-height: 70%; 
-            height: auto; /* Ahora la altura se adapta al texto */
-            max-height: 90vh; /* Evita que sea más grande que la pantalla */
-            overflow-y: auto; /* Agrega una barra de desplazamiento si es necesario en celulares */
-            background-color: #fffdef; /* Color papel */
-            padding: 40px 40px;
+            height: auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            background-color: #fffdef;
+            padding: 40px;
             border-radius: 15px;
             box-shadow: 0 8px 30px rgba(0,0,0,0.1);
             text-align: center;
-            /* Textura sutil de líneas de cuaderno */
             background-image: linear-gradient(#f0e6d2 1px, transparent 1px);
             background-size: 100% 30px;
-            box-sizing: border-box; /* Asegura que el padding no agrande el div */
+            box-sizing: border-box;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
-            
-            /* APLICAMOS LA FUENTE CURSIVA AQUÍ */
             font-family: 'Dancing Script', cursive;
         }
 
-        /* Para ocultar la barra de scroll visualmente pero permitir el scroll */
         .hoja-carta::-webkit-scrollbar {
             width: 8px;
         }
@@ -132,34 +128,33 @@
 
         .contenido-sorpresa h1 {
             color: #d35400;
-            font-size: 3rem; /* Letra ajustada para el nuevo texto */
+            font-size: 3rem;
             margin-top: 0;
             margin-bottom: 20px;
             font-weight: 700;
         }
 
         .contenido-sorpresa p {
-            font-size: 1.6rem; /* Letra ajustada para el nuevo texto */
+            font-size: 1.6rem;
             color: #795548;
             line-height: 1.4;
             margin-bottom: 30px;
         }
 
-        /* Contador posicionado abajo dentro de la carta */
         #contador {
-            margin-top: auto; /* Empuja el contador al fondo de la flexbox de la carta */
+            margin-top: auto;
             padding-top: 20px;
             border-top: 2px dashed #e6dcc8;
-            font-size: 1.5rem; /* Ajustado ligeramente */
+            font-size: 1.5rem;
             color: #e67e22;
             font-weight: 700;
         }
 
-        /* Sección Derecha: El Ramo (Canvas) */
+        /* Sección Derecha/Abajo: El Ramo (Canvas) */
         .seccion-ramo {
-            flex: 1; /* Ocupa la mitad derecha */
+            flex: 1;
             position: relative;
-            background-color: #fff9e6; /* Mismo fondo que el inicio */
+            background-color: #fff9e6;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -168,6 +163,62 @@
         canvas {
             width: 100%;
             height: 100%;
+        }
+
+        /* =========================================
+           DISEÑO RESPONSIVO (PARA CELULARES)
+           ========================================= */
+        @media (max-width: 768px) {
+            /* Apilar verticalmente */
+            #vista2 {
+                flex-direction: column;
+            }
+
+            /* Ajustar primera vista */
+            .encabezado-inicio h2 {
+                font-size: 2.2rem;
+            }
+            .flores-inicio {
+                font-size: 70px;
+            }
+            button {
+                padding: 15px 35px;
+                font-size: 20px;
+            }
+
+            /* La carta toma la mitad superior */
+            .seccion-carta {
+                flex: none;
+                height: 55vh; /* 55% de la pantalla */
+                padding: 15px 10px;
+            }
+
+            .hoja-carta {
+                width: 95%; /* Más ancha en celular */
+                height: 100%;
+                padding: 25px 20px;
+            }
+
+            .contenido-sorpresa h1 {
+                font-size: 2.2rem; /* Letra un poco más pequeña */
+                margin-bottom: 15px;
+            }
+
+            .contenido-sorpresa p {
+                font-size: 1.3rem;
+                margin-bottom: 15px;
+            }
+
+            #contador {
+                font-size: 1.2rem;
+                padding-top: 10px;
+            }
+
+            /* El ramo toma la mitad inferior */
+            .seccion-ramo {
+                flex: none;
+                height: 45vh; /* 45% de la pantalla */
+            }
         }
     </style>
 </head>
@@ -200,12 +251,8 @@
     </div>
 
     <script>
-        // ==========================================
-        // --- CONFIGURACIÓN DEL TIEMPO ---
-        // ==========================================
-        const fechaInicio = new Date(2025, 11, 11); // Tu fecha configurada
+        const fechaInicio = new Date(2025, 11, 11);
 
-        // Referencias a los elementos
         const vista1 = document.getElementById('vista1');
         const vista2 = document.getElementById('vista2');
         const btnSorpresa = document.getElementById('btnSorpresa');
@@ -214,22 +261,18 @@
         const ctx = canvas.getContext('2d');
         const seccionRamo = document.querySelector('.seccion-ramo');
 
-        // Función para cambiar de vista e iniciar todo
         btnSorpresa.addEventListener('click', () => {
             vista1.style.opacity = '0';
             setTimeout(() => {
                 vista1.style.display = 'none';
                 vista2.style.opacity = '1';
-                vista2.style.pointerEvents = 'auto'; // Activar interacciones
-                ajustarCanvas(); // Asegurar tamaño correcto del canvas
+                vista2.style.pointerEvents = 'auto';
+                ajustarCanvas();
                 iniciarContador();
                 iniciarAnimacionRamo();
-            }, 1000); // Esperar a que la primera vista se desvanezca
+            }, 1000);
         });
 
-        // ==========================================
-        // --- LÓGICA DEL CONTADOR ---
-        // ==========================================
         function actualizarContador() {
             const ahora = new Date();
             const diferencia = ahora - fechaInicio;
@@ -239,7 +282,6 @@
                 return;
             }
 
-            // Cálculos de tiempo
             const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
             const horas = Math.floor((diferencia / (1000 * 60 * 60)) % 24);
             const minutos = Math.floor((diferencia / 1000 / 60) % 60);
@@ -250,16 +292,14 @@
 
         function iniciarContador() {
             actualizarContador();
-            setInterval(actualizarContador, 1000); // Actualizar cada segundo
+            setInterval(actualizarContador, 1000);
         }
 
-        // ==========================================
-        // --- LÓGICA DE LA ANIMACIÓN DEL RAMO (Canvas) ---
-        // ==========================================
         function ajustarCanvas() {
             canvas.width = seccionRamo.offsetWidth;
             canvas.height = seccionRamo.offsetHeight;
         }
+        
         window.addEventListener('resize', () => {
             if (vista2.style.opacity === '1') {
                 ajustarCanvas();
@@ -268,12 +308,17 @@
             }
         });
 
+        // Calculamos un factor de escala por si la pantalla es muy pequeña (celulares)
+        function obtenerFactorEscala() {
+            return Math.min(canvas.width / 400, 1);
+        }
+
         class Girasol {
             constructor(finalX, finalY, delay, tamañoBase) {
                 this.finalX = finalX;
                 this.finalY = finalY;
                 this.baseX = canvas.width / 2;
-                this.baseY = canvas.height * 0.9;
+                this.baseY = canvas.height * 0.95; // Bajamos un poco la base
                 
                 this.radioCentro = 0;
                 this.maxRadioCentro = tamañoBase * (Math.random() * 0.2 + 0.9);
@@ -300,14 +345,17 @@
                 const progresoSuave = 1 - Math.pow(1 - progreso, 3);
 
                 this.radioCentro = this.maxRadioCentro * progresoSuave;
+                const factor = obtenerFactorEscala();
 
+                // Tallo
                 ctx.beginPath();
                 ctx.moveTo(this.finalX, this.finalY);
                 ctx.lineTo(this.baseX, this.baseY);
-                ctx.lineWidth = 6;
+                ctx.lineWidth = 6 * factor;
                 ctx.strokeStyle = '#2e7d32';
                 ctx.stroke();
 
+                // Pétalos
                 if (progreso > 0.5) {
                     this.progresoPetalos = Math.min((progreso - 0.5) * 2, 1);
                     const numPetalos = 18;
@@ -320,7 +368,7 @@
                         ctx.rotate(angulo);
                         
                         ctx.beginPath();
-                        ctx.ellipse(0, this.maxRadioCentro * 0.8 + largoPetalo/2, 9, largoPetalo/2, 0, 0, Math.PI * 2);
+                        ctx.ellipse(0, this.maxRadioCentro * 0.8 + largoPetalo/2, 9 * factor, largoPetalo/2, 0, 0, Math.PI * 2);
                         ctx.fillStyle = '#ffc107';
                         ctx.fill();
                         ctx.strokeStyle = '#f39c12';
@@ -330,14 +378,16 @@
                     }
                 }
 
+                // Centro
                 ctx.beginPath();
                 ctx.arc(this.finalX, this.finalY, this.radioCentro, 0, Math.PI * 2);
                 ctx.fillStyle = '#5d4037';
                 ctx.fill();
                 
-                if (this.radioCentro > 10) {
+                // Semillas
+                if (this.radioCentro > 10 * factor) {
                     ctx.fillStyle = '#3e2723';
-                    for(let i=0; i < this.radioCentro; i+=6) {
+                    for(let i=0; i < this.radioCentro; i+= (6 * factor)) {
                         ctx.beginPath();
                         ctx.arc(this.finalX, this.finalY, i*0.8, 0, Math.PI * 2);
                         ctx.setLineDash([2, 5]);
@@ -353,23 +403,25 @@
         let ramilleteBaseX, ramilleteBaseY;
 
         function dibujarWrapper() {
+            const factor = obtenerFactorEscala();
+            
             ctx.save();
             ctx.beginPath();
-            ctx.moveTo(ramilleteBaseX - 120, ramilleteBaseY - 80);
-            ctx.lineTo(ramilleteBaseX + 120, ramilleteBaseY - 80);
-            ctx.lineTo(ramilleteBaseX + 50, ramilleteBaseY + 200);
-            ctx.lineTo(ramilleteBaseX - 50, ramilleteBaseY + 200);
+            ctx.moveTo(ramilleteBaseX - (120 * factor), ramilleteBaseY - (60 * factor));
+            ctx.lineTo(ramilleteBaseX + (120 * factor), ramilleteBaseY - (60 * factor));
+            ctx.lineTo(ramilleteBaseX + (50 * factor), ramilleteBaseY + (200 * factor));
+            ctx.lineTo(ramilleteBaseX - (50 * factor), ramilleteBaseY + (200 * factor));
             ctx.closePath();
             ctx.fillStyle = '#a1887f';
             ctx.fill();
             ctx.strokeStyle = '#795548';
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 5 * factor;
             ctx.stroke();
             
             ctx.beginPath();
-            ctx.moveTo(ramilleteBaseX - 70, ramilleteBaseY + 60);
-            ctx.lineTo(ramilleteBaseX + 70, ramilleteBaseY + 60);
-            ctx.lineWidth = 18;
+            ctx.moveTo(ramilleteBaseX - (70 * factor), ramilleteBaseY + (40 * factor));
+            ctx.lineTo(ramilleteBaseX + (70 * factor), ramilleteBaseY + (40 * factor));
+            ctx.lineWidth = 15 * factor;
             ctx.strokeStyle = '#ffb300';
             ctx.stroke();
             ctx.restore();
@@ -378,18 +430,20 @@
         function iniciarAnimacionRamo() {
             girsolesActivos = [];
             ramilleteBaseX = canvas.width / 2;
-            ramilleteBaseY = canvas.height * 0.7;
+            ramilleteBaseY = canvas.height * 0.7; // El papel empieza más abajo
 
             const cantidadGirasoles = 7;
-            const radioRamo = Math.min(canvas.width, canvas.height) * 0.25;
-            const tamañoFlorBase = 30;
+            const factor = obtenerFactorEscala();
+            // El ramo no debe ser más ancho que la pantalla
+            const radioRamo = Math.min(canvas.width * 0.4, canvas.height * 0.35); 
+            const tamañoFlorBase = 30 * factor;
 
             for (let i = 0; i < cantidadGirasoles; i++) {
                 const angulo = (i / (cantidadGirasoles - 1)) * Math.PI - Math.PI; 
                 const distanciaVar = radioRamo * (0.8 + Math.random() * 0.4);
                 
-                const x = ramilleteBaseX + Math.cos(angulo) * distanciaVar * 0.7;
-                const y = ramilleteBaseY + Math.sin(angulo) * distanciaVar * 0.5;
+                const x = ramilleteBaseX + Math.cos(angulo) * distanciaVar * 0.8;
+                const y = ramilleteBaseY + Math.sin(angulo) * distanciaVar * 0.6 - (20 * factor);
                 
                 const delay = i * 400;
 
